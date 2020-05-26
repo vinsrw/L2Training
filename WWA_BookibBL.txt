@@ -1,0 +1,258 @@
+mysql> desc gen_Counter;
++-----------------+---------------+------+-----+---------------------+----------------+
+| Field           | Type          | Null | Key | Default             | Extra          |
++-----------------+---------------+------+-----+---------------------+----------------+
+| iCounterID      | int(11)       | NO   | PRI | NULL                | auto_increment |
+| cCountername    | char(50)      | NO   |     |                     |                |
+| iCounterstart   | int(11)       | NO   |     | 0                   |                |
+| iCountercurrent | int(11)       | NO   |     | 0                   |                |
+| iCounterend     | int(11)       | NO   |     | 0                   |                |
+| cCustomcounter  | enum('N','Y') | NO   |     | N                   |                |
+| cType           | char(10)      | NO   |     |                     |                |
+| cApptype        | char(2)       | NO   |     |                     |                |
+| iEnteredby      | int(11)       | NO   |     | 0                   |                |
+| tEntered        | datetime      | NO   |     | 0000-00-00 00:00:00 |                |
+| iUpdatedby      | int(11)       | NO   |     | 0                   |                |
+| tUpdated        | datetime      | NO   |     | 0000-00-00 00:00:00 |                |
++-----------------+---------------+------+-----+---------------------+----------------+
+12 rows in set (0.00 sec)
+
+mysql> desc sei_Member_transfer;
++-------------------+-------------+------+-----+---------------------+----------------+
+| Field             | Type        | Null | Key | Default             | Extra          |
++-------------------+-------------+------+-----+---------------------+----------------+
+| iMembertransferID | int(11)     | NO   | PRI | NULL                | auto_increment |
+| iMemberID         | int(11)     | NO   | MUL | 0                   |                |
+| cTransfertype     | varchar(10) | NO   | MUL |                     |                |
+| cUsername         | varchar(30) | NO   |     |                     |                |
+| cPassword         | varchar(40) | NO   |     |                     |                |
+| cServer           | varchar(50) | NO   |     |                     |                |
+| cPort             | int(4)      | NO   |     | 0                   |                |
+| iStatus           | tinyint(1)  | NO   | MUL | 0                   |                |
+| iEnteredby        | int(11)     | NO   |     | 0                   |                |
+| tEntered          | datetime    | NO   |     | 0000-00-00 00:00:00 |                |
+| iUpdatedby        | int(11)     | NO   |     | 0                   |                |
+| tUpdated          | datetime    | NO   |     | 0000-00-00 00:00:00 |                |
++-------------------+-------------+------+-----+---------------------+----------------+
+12 rows in set (0.01 sec)
+
+
+mysql> desc sei_Member_transfer_program_link;
++--------------------------+--------------+------+-----+---------------------+----------------+
+| Field                    | Type         | Null | Key | Default             | Extra          |
++--------------------------+--------------+------+-----+---------------------+----------------+
+| iMembertransferprogramID | int(11)      | NO   | PRI | NULL                | auto_increment |
+| iMembertransferID        | int(11)      | NO   | MUL | 0                   |                |
+| iProgramID               | int(11)      | NO   | MUL | 0                   |                |
+| iOfficemapID             | int(11)      | NO   | MUL | 0                   |                |
+| cMessageformat           | varchar(20)  | NO   |     |                     |                |
+| cFilenameformat          | varchar(255) | YES  |     | NULL                |                |
+| cCompressiontype         | varchar(6)   | NO   |     |                     |                |
+| cDestination             | varchar(100) | NO   | MUL |                     |                |
+| cAckfilenameformat       | varchar(255) | YES  |     | NULL                |                |
+| cAckdestination          | varchar(100) | NO   |     |                     |                |
+| iStatus                  | tinyint(3)   | NO   | MUL | 0                   |                |
+| iEnteredby               | int(11)      | NO   |     | 0                   |                |
+| tEntered                 | datetime     | NO   |     | 0000-00-00 00:00:00 |                |
+| iUpdatedby               | int(11)      | NO   |     | 0                   |                |
+| tUpdated                 | datetime     | NO   |     | 0000-00-00 00:00:00 |                |
++--------------------------+--------------+------+-----+---------------------+----------------+
+15 rows in set (0.03 sec)
+
+
+mysql> desc sei_Member_setting;
++------------------+--------------+------+-----+---------------------+----------------+
+| Field            | Type         | Null | Key | Default             | Extra          |
++------------------+--------------+------+-----+---------------------+----------------+
+| iMembersettingID | int(11)      | NO   | PRI | NULL                | auto_increment |
+| iMemberID        | int(11)      | NO   | MUL | 0                   |                |
+| iProgramID       | int(11)      | NO   |     | 0                   |                |
+| cCode            | varchar(60)  | YES  |     | NULL                |                |
+| cValue           | varchar(255) | YES  |     | NULL                |                |
+| cExtendedcode    | text         | YES  |     | NULL                |                |
+| tExecutiondate   | date         | NO   |     | 0000-00-00          |                |
+| iStatus          | tinyint(3)   | NO   |     | 0                   |                |
+| iEnteredby       | int(11)      | NO   |     | 0                   |                |
+| tEntered         | datetime     | NO   |     | 0000-00-00 00:00:00 |                |
+| iUpdatedby       | int(11)      | NO   |     | 0                   |                |
+| tUpdated         | datetime     | NO   |     | 0000-00-00 00:00:00 |                |
++------------------+--------------+------+-----+---------------------+----------------+
+12 rows in set (0.03 sec)
+
+
+mysql> desc sei_Office_map;
++--------------------+---------------+------+-----+---------------------+----------------+
+| Field              | Type          | Null | Key | Default             | Extra          |
++--------------------+---------------+------+-----+---------------------+----------------+
+| iOfficemapID       | int(11)       | NO   | PRI | NULL                | auto_increment |
+| iOfficeID          | int(11)       | NO   |     | 0                   |                |
+| iBranchID          | int(11)       | NO   |     | 0                   |                |
+| iMemberID          | int(11)       | NO   |     | 0                   |                |
+| iAgentmemberID     | int(11)       | NO   |     | 0                   |                |
+| iCountryID         | int(11)       | YES  |     | NULL                |                |
+| iCurrencyID        | int(11)       | YES  |     | 0                   |                |
+| cExternalcode      | char(30)      | YES  | MUL | NULL                |                |
+| cCmscode           | char(200)     | NO   |     |                     |                |
+| cAlias             | char(200)     | NO   |     |                     |                |
+| cLocationcode      | char(5)       | NO   |     |                     |                |
+| cCity              | char(50)      | NO   |     |                     |                |
+| cCountry           | char(50)      | NO   |     |                     |                |
+| cCountryCode       | char(50)      | NO   |     |                     |                |
+| cShipcolocation    | enum('Y','N') | NO   |     | Y                   |                |
+| cAgentemail        | char(50)      | NO   |     |                     |                |
+| cSendCMSbooking    | enum('Y','N') | NO   |     | Y                   |                |
+| cCustomDestination | enum('Y','N') | NO   |     | N                   |                |
+| iStatus            | tinyint(3)    | NO   |     | 0                   |                |
+| iEnteredby         | int(11)       | NO   |     | 0                   |                |
+| tEntered           | datetime      | NO   |     | 0000-00-00 00:00:00 |                |
+| iUpdatedby         | int(11)       | NO   |     | 0                   |                |
+| tUpdated           | datetime      | NO   |     | 0000-00-00 00:00:00 |                |
++--------------------+---------------+------+-----+---------------------+----------------+
+23 rows in set (0.01 sec)
+
+
+mysql> desc gen_Program;
++-----------------+---------------+------+-----+---------------------+----------------+
+| Field           | Type          | Null | Key | Default             | Extra          |
++-----------------+---------------+------+-----+---------------------+----------------+
+| iProgramID      | int(11)       | NO   | PRI | NULL                | auto_increment |
+| cCode           | char(3)       | NO   | MUL |                     |                |
+| cName           | char(50)      | NO   |     |                     |                |
+| cStatustype     | char(3)       | YES  |     | NULL                |                |
+| cDescription    | varchar(50)   | YES  |     | NULL                |                |
+| bConfiguration  | char(1)       | YES  |     | Y                   |                |
+| cEmailprefix    | varchar(50)   | NO   |     |                     |                |
+| cProcesslog     | char(1)       | YES  |     | N                   |                |
+| iMaxcmscode     | int(11)       | NO   |     | 0                   |                |
+| iMaxcmsalias    | int(11)       | NO   |     | 0                   |                |
+| cExceptionemail | varchar(50)   | NO   |     |                     |                |
+| bEireport       | enum('Y','N') | YES  | MUL | N                   |                |
+| cFiledownload   | enum('Y','N') | NO   |     | N                   |                |
+| iStatus         | int(11)       | NO   |     | 0                   |                |
+| iEnteredby      | int(11)       | NO   |     | 0                   |                |
+| tEntered        | datetime      | NO   |     | 0000-00-00 00:00:00 |                |
+| iUpdatedby      | int(11)       | NO   |     | 0                   |                |
+| tUpdated        | datetime      | NO   |     | 0000-00-00 00:00:00 |                |
++-----------------+---------------+------+-----+---------------------+----------------+
+18 rows in set (0.03 sec)
+
+
+mysql> select distinct cType, cUserApptype from gen_User;
++-------+--------------+
+| cType | cUserApptype |
++-------+--------------+
+| S     | WO           |
+| A     | WE           |
+| C     | WO           |
+| C     | WE           |
+| A     | WO           |
+| NULL  | WE           |
+| NULL  | WO           |
+|       | WO           |
+| S     | WE           |
+| S     | WS           |
++-------+--------------+
+10 rows in set (0.00 sec)
+
+
+
+
+mysql> desc gen_User;
++-------------------------+-----------------------------------+------+-----+---------------------+----------------+
+| Field                   | Type                              | Null | Key | Default             | Extra          |
++-------------------------+-----------------------------------+------+-----+---------------------+----------------+
+| iUserID                 | int(11)                           | NO   | PRI | NULL                | auto_increment |
+| iCompanyID              | int(11)                           | NO   |     | 0                   |                |
+| iA2dmarkuplevelID       | int(11)                           | NO   |     | 0                   |                |
+| iD2amarkuplevelID       | int(11)                           | NO   |     | 0                   |                |
+| iS2dmarkuplevelID       | int(11)                           | NO   |     | 0                   |                |
+| iD2smarkuplevelID       | int(11)                           | NO   |     | 0                   |                |
+| iFclmarkupcompanyID     | int(11)                           | NO   |     | 0                   |                |
+| iLclsurchargeID         | int(11)                           | NO   |     | 0                   |                |
+| iWarehouseID            | int(11)                           | NO   |     | 0                   |                |
+| iCounterID              | int(11)                           | NO   |     | 0                   |                |
+| iCountryID              | int(11)                           | NO   |     | 0                   |                |
+| cFclmarkupcompanycode   | varchar(11)                       | NO   |     |                     |                |
+| cType                   | enum('S','A','C','W')             | YES  |     | NULL                |                |
+| bQuoteaccess            | enum('Y','N')                     | NO   |     | N                   |                |
+| cCompanyname            | varchar(40)                       | NO   |     |                     |                |
+| cAddress                | varchar(100)                      | NO   |     |                     |                |
+| cCity                   | varchar(30)                       | NO   |     |                     |                |
+| cPostalcode             | varchar(10)                       | NO   |     |                     |                |
+| cState                  | varchar(15)                       | NO   |     |                     |                |
+| cPhone                  | varchar(20)                       | NO   |     | 0                   |                |
+| cFax                    | varchar(20)                       | NO   |     | 0                   |                |
+| cContactperson          | varchar(50)                       | NO   |     |                     |                |
+| cEmail                  | varchar(50)                       | NO   |     |                     |                |
+| cUsername               | varchar(50)                       | NO   | MUL |                     |                |
+| cPassword               | varchar(40)                       | NO   |     |                     |                |
+| cDebugmode              | enum('Y','N')                     | NO   |     | N                   |                |
+| cGlobalRFQ              | enum('Y','N')                     | NO   |     | N                   |                |
+| cAlternateCustomerRFQ   | enum('Y','N')                     | NO   |     | N                   |                |
+| cUom                    | enum('E','M')                     | YES  |     | NULL                |                |
+| cRegion                 | enum('AMER','EUAF','ASPA')        | YES  |     | NULL                |                |
+| cLogo                   | varchar(80)                       | NO   |     |                     |                |
+| cRole                   | varchar(50)                       | NO   |     |                     |                |
+| cLanguage               | varchar(50)                       | NO   |     |                     |                |
+| cHandlingoffice         | varchar(5)                        | NO   |     |                     |                |
+| cCmsbooquo              | varchar(10)                       | NO   |     |                     |                |
+| cActiveaccount          | enum('P','N','Y')                 | NO   |     | P                   |                |
+| cEmailerror             | varchar(50)                       | NO   |     |                     |                |
+| tAccountexpiration      | date                              | NO   |     | 0000-00-00          |                |
+| tExpirationwarning      | datetime                          | NO   |     | 0000-00-00 00:00:00 |                |
+| tExpirationwarningfinal | datetime                          | NO   |     | 0000-00-00 00:00:00 |                |
+| cSessionoverride        | enum('N','Y')                     | NO   |     | N                   |                |
+| iSessiontimeout         | int(11)                           | NO   |     | 0                   |                |
+| tActivated              | datetime                          | NO   |     | 0000-00-00 00:00:00 |                |
+| cComments               | varchar(255)                      | NO   |     |                     |                |
+| cNewsletter             | enum('Y','N')                     | NO   |     | Y                   |                |
+| cNewsletterformat       | enum('H','T')                     | NO   |     | H                   |                |
+| cNotificationformat     | enum('T','H')                     | NO   |     | T                   |                |
+| iDisplaySchedule        | enum('1','2','3','4','5','6','7') | NO   |     | 1                   |                |
+| iUploadDeleteSchedule   | enum('1','2','3')                 | NO   |     | 1                   |                |
+| iMemberId               | int(11)                           | NO   |     | 0                   |                |
+| cShowsurcharges         | enum('Y','N')                     | NO   |     | Y                   |                |
+| cTmsapikey              | varchar(100)                      | NO   |     |                     |                |
+| bAutoRenewal            | enum('Y','N')                     | NO   |     | N                   |                |
+| cAccessToken            | varchar(255)                      | NO   |     |                     |                |
+| cRateDeleteFlag         | enum('Y','N')                     | NO   |     | N                   |                |
+| cUserApptype            | enum('WO','WE','WS')              | YES  |     | WO                  |                |
+| cPwdToken               | varchar(255)                      | NO   |     |                     |                |
+| cIsRoundOffRFQ          | enum('Y','N')                     | NO   |     | N                   |                |
+| iStatus                 | int(11)                           | NO   |     | 0                   |                |
+| iEnteredby              | int(11)                           | NO   |     | 0                   |                |
+| tEntered                | datetime                          | NO   |     | 0000-00-00 00:00:00 |                |
+| iUpdatedby              | int(11)                           | NO   |     | 0                   |                |
+| tUpdated                | datetime                          | NO   |     | 0000-00-00 00:00:00 |                |
++-------------------------+-----------------------------------+------+-----+---------------------+----------------+
+63 rows in set (0.00 sec)
+
+
+mysql> desc sei_Member;
++------------------------------+---------------+------+-----+---------------------+----------------+
+| Field                        | Type          | Null | Key | Default             | Extra          |
++------------------------------+---------------+------+-----+---------------------+----------------+
+| iMemberID                    | int(11)       | NO   | PRI | NULL                | auto_increment |
+| iUserID                      | int(11)       | NO   | MUL | 0                   |                |
+| cCompanycode                 | varchar(40)   | NO   | MUL |                     |                |
+| cCmsagent                    | varchar(15)   | YES  |     | NULL                |                |
+| cCompanyname                 | varchar(40)   | NO   |     |                     |                |
+| cContactname                 | varchar(20)   | NO   |     |                     |                |
+| cContactemail                | varchar(50)   | NO   |     |                     |                |
+| cContactphone                | varchar(20)   | NO   |     |                     |                |
+| cPasswordrecipient           | varchar(20)   | NO   |     |                     |                |
+| cUomspecial                  | enum('N','Y') | NO   |     | N                   |                |
+| cBlpdfupload                 | enum('N','Y') | NO   |     | N                   |                |
+| cBkgextvvid                  | enum('N','Y') | NO   |     | N                   |                |
+| cBkgsendcfs                  | enum('Y','N') | NO   |     | N                   |                |
+| cBkgsendinitialcustomeremail | enum('Y','N') | NO   |     | Y                   |                |
+| cSendfinalbkgconfirmation    | enum('Y','N') | NO   |     | N                   |                |
+| cEitransferdestination       | varchar(20)   | NO   |     |                     |                |
+| iEnteredby                   | int(11)       | NO   |     | 0                   |                |
+| tEntered                     | datetime      | NO   |     | 0000-00-00 00:00:00 |                |
+| iUpdatedby                   | int(11)       | NO   |     | 0                   |                |
+| tUpdated                     | datetime      | NO   |     | 0000-00-00 00:00:00 |                |
++------------------------------+---------------+------+-----+---------------------+----------------+
+20 rows in set (0.00 sec)
+
+

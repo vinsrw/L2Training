@@ -1,0 +1,166 @@
+
+                                       Shipco Booking BL Setup Steps
+									   
+On Shipco we need Customer Setup -> Make Booking -> Booking Confirmation
+
+USER SET UP/Configuration
+
+	 Refer User setup / Configuration document
+     https://www.wwalliance.com/wiki/index.php/Steps_to_Configure_any_Member/Customer_on_WWA
+	 
+	 
+Required Data:
+	
+	1.User / Customer name
+		like : edi_weissrohlig_prod
+
+	2.Password
+		like: hfDht6cXE06P6BGUmFr
+
+	3.Company Name
+		like : Weiss Rohlig
+		
+Database Setting:
+
+			1. Find iCounterID from gen_Counter based on cCountername
+			
+			<snip>
+				SET @iCounter=(SELECT iCounterID from gen_Counter where cCountername='booking_counter' limit 1);
+			</snip>
+					Here cCountername Name can be = booking_counter / Test n\g / air_quote_counter / filebl_counter / filebl_counter /quote_tms_counter / quote_accu_counter / 
+					                                quote_ref_accurate_counter / quote_accurate_counter  
+			 For booking we use booking_counter
+			 
+			2. Configure user for booking in gen_User table with the help of iCounterID. //We are inserting iCounterID, cCompanyName, cPassword in to gen_User 
+			
+			<snip>
+				INSERT INTO gen_User SET cUserApptype='SE', cUsername ='edi_weissrohlig_prod' , cCompanyname='Weiss Rohlig' , cPassword = sha1('PhfDht6cXE06P6BGUmFr') , iCounterid=@iCounter,tEntered=now();
+			</snip>
+							Here cUserApptype can be SE / SO [SE- Shipco EDI, SO- Shipco Online]
+			
+			3. Find iUserID of user from table gen_User based on cUsername. 
+			
+			<snip>
+				SET @iUserID=(SELECT iUserID FROM gen_User WHERE cUsername ='edi_weissrohlig_prod' limit 1);
+			</snip>
+			
+			4. Configure user for booking in sei_Member table with the help of iUserID. // Based on iUserID we can get all the booking details 
+			
+			<snip>
+				INSERT INTO sei_Member SET iUserID=@iUserID,cCompanycode='edi_weissrohlig_prod' , cCompanyName='Weiss Rohlig', cSendfinalbkgconfirmation='Y',tEntered=now();
+			</snip>
+			
+			5. Find iMemberID from table sei_Member for user based on cCompanycode.
+			
+			<snip>
+				SET @iMemberID=(SELECT iMemberID FROM sei_Member WHERE cCompanycode='edi_weissrohlig_prod'  limit 1);
+			</snip>
+			
+			6. Find iProgramID from table gen_Program for user based on cCode.
+			
+			 //From gen_Program table we identified whether it is booking, schedule, conversion, rates,FCL etc... 
+		       module as mentioned in above table and based on it we keep respective setting for that module in sei_Member_setting table.  
+		
+			<snip>
+				SET @iProgramID = (SELECT iProgramID FROM gen_Program WHERE cCode = 'BKC');
+			</snip>                              
+										  Table gives cCode Details
+									+-------+-------------------------------------+
+									| cCode | CName                               |
+									+-------+-------------------------------------+
+									| BKG   | Make a Booking                      |
+									| SCH   | Schedule                            |
+									| RAL   | Rate LCL                            |
+									| FSU   | Flight Status Update                |
+									| FWB   | Flight Air Waybill Status Request   |
+									| FHL   | AIR WAYBILL CONSOLIDATED DATA       |
+									| OBL   | OBLInstruction                      |
+									| DLM   | Download Manager                    |
+									| BLI   | BL Intruction Integration           |
+									| SCI   | Schedule Import                     |
+									| TRA   | Tracking                            |
+									| ATR   | Air Tracking                        |
+									| SSM   | Shipment Status Message             |
+									| WIR   | Warehouse Inventory Report          |
+									| BKC   | Booking Confirmation                |
+									| SSI   | Shipment Status Import              |
+									| SSU   | Shipment Status Update              |
+									| RAG   | Global LCL Rate                     |
+									| RPS   | Run Report Statistics               |
+									| BLD   | Bill of Lading Draft                |
+									| IVE   | Invoice Export                      |
+									| IVI   | Invoice Internal                    |
+									| AFR   | Air Rates                           |
+									| FBP   | FileBL Preprocess                   |
+									| SMD   | SmartDocs                           |
+									| ACC   | Accounting                          |
+									| VCT   | Vendor CFSTracking                  |
+									| BOE   | Bill of lading Export               |
+									| ASM   | Air Shipment status Message         |
+									| IVA   | Invoice Acknowledgement             |
+									| FNA   | FAILURE NOTICE AIRWAY BILL          |
+									| ATF   | ATFI RATES                          |
+									| LRI   | LCL RATES INTERNAL                  |
+									| INI   | Invoice Import                      |
+									| PAK   | Portal Acknowledgment (997)         |
+									| CAK   | Carrier Acknowledgment (824/Aperak) |
+									| MEP   | Manifest Export Preprocess          |
+									| CBD   | Carrier BL Document                 |
+									| ARU   | Archive Utility                     |
+									| CMD   | Carrier Message Delay Report        |
+									| AMG   | AmazonGlacier                       |
+									| IMP   | Import Manifest Process             |
+									| TAS   | Transfer to AmazonS3                |
+									| MSR   | Milestone Report                    |
+									| ACU   | LCL Accurate Rate                   |
+									| BQD   | Booking/Quote/Documentation         |
+									| BAR   | BL Audit Report                     |
+									| BAT   | BL Audit Tool                       |
+									| KPI   | Key Performance Indicator           |
+									| AAR   | ARN Audit Report                    |
+									| AAT   | ARN Audit Tool                      |
+									+-------+-------------------------------------+
+
+
+	7. Configure user for booking confirmation report in sei_Member_setting table.
+	<snip>
+	
+		INSERT INTO sei_Member_setting SET iMemberID = @iMemberID, iProgramID = @iProgramID, tEntered=now(), cCode = 'envelope_senderid', cValue = 'edi_shipco_prod';
+		INSERT INTO sei_Member_setting SET iMemberID = @iMemberID, iProgramID = @iProgramID, tEntered=now(), cCode = 'envelope_receiverid', cValue = 'edi_weissrohlig_prod' ;
+		INSERT INTO sei_Member_setting SET iMemberID = @iMemberID, iProgramID = @iProgramID, tEntered=now(), cCode = 'envelope_password', cValue = 'PhfDht6cXE06P6BGUmFr' ;
+		INSERT INTO sei_Member_setting SET iMemberID = @iMemberID, iProgramID = @iProgramID, tEntered=now(), cCode = 'envelope_version', cValue = '1.0.8';
+		INSERT INTO sei_Member_setting SET iMemberID = @iMemberID, iProgramID = @iProgramID, tEntered=now(), cCode = 'envelope_type', cValue = 'Booking_Confirmation_XML_Customer';
+		INSERT INTO sei_Member_setting SET iMemberID = @iMemberID, iProgramID = @iProgramID, tEntered=now(), cCode = 'source_dir', cValue = '';
+		INSERT INTO sei_Member_setting SET iMemberID = @iMemberID, iProgramID = @iProgramID, tEntered=now(), cCode = 'source_file', cValue = '';
+		INSERT INTO sei_Member_setting SET iMemberID = @iMemberID, iProgramID = @iProgramID, tEntered=now(), cCode = 'modeoftransfer', cValue = 'dir';
+		INSERT INTO sei_Member_setting SET iMemberID = @iMemberID, iProgramID = @iProgramID, tEntered=now(), cCode = 'destination_port', cValue = '';
+		INSERT INTO sei_Member_setting SET iMemberID = @iMemberID, iProgramID = @iProgramID, tEntered=now(), cCode = 'destination_username', cValue = '';
+		INSERT INTO sei_Member_setting SET iMemberID = @iMemberID, iProgramID = @iProgramID, tEntered=now(), cCode = 'destination_password', cValue = '';
+		INSERT INTO sei_Member_setting SET iMemberID = @iMemberID, iProgramID = @iProgramID, tEntered=now(), cCode = 'destination_dir', cValue = '/home/edi_shipco_prod/download/booking_confirmation';
+		INSERT INTO sei_Member_setting SET iMemberID = @iMemberID, iProgramID = @iProgramID, tEntered=now(), cCode = 'destination_file', cValue = 'BOOKINGCONFIRMATION.{{YYYYMMDD}}.{{HHmmSS}}.{{uuu}}_final.xml';
+		INSERT INTO sei_Member_setting SET iMemberID = @iMemberID, iProgramID = @iProgramID, tEntered=now(), cCode = 'secure_pdf_url', cValue = 'Y';
+		
+	</snip>	
+
+	
+	8. Find iProgramID from table gen_Program for user based on cCode. 
+	  			
+			<snip>
+				SET @iProgramID = (SELECT iProgramID FROM gen_Program WHERE cCode = 'BKG');   //For cCode refer above table
+
+			</snip>  
+			
+	9. Configure user for booking report in sei_Member_setting table.
+		<snip>
+	
+		INSERT INTO sei_Member_setting SET iMemberID = @iMemberID, iProgramID = @iProgramID, tEntered=now(), cCode = 'check_reference', cValue = 'CustomerReference';
+		INSERT INTO sei_Member_setting SET iMemberID = @iMemberID, iProgramID = @iProgramID, tEntered=now(), cCode = 'cSenderID', cValue = 'edi_shipco_prod';
+		INSERT INTO sei_Member_setting SET iMemberID = @iMemberID, iProgramID = @iProgramID, tEntered=now(), cCode = 'cReceiverID', cValue = 'edi_weissrohlig_prod';
+		INSERT INTO sei_Member_setting SET iMemberID = @iMemberID, iProgramID = @iProgramID, tEntered=now(), cCode = 'cPassword', cValue = 'PhfDht6cXE06P6BGUmFr' ;
+		INSERT INTO sei_Member_setting SET iMemberID = @iMemberID, iProgramID = @iProgramID, tEntered=now(), cCode = 'cVersion', cValue = '1.0.8';
+		INSERT INTO sei_Member_setting SET iMemberID = @iMemberID, iProgramID = @iProgramID, tEntered=now(), cCode = 'cType', cValue = 'Booking_Confirmation_XML_Customer';
+		INSERT INTO sei_Member_setting SET iMemberID = @iMemberID, iProgramID = @iProgramID, tEntered=now(), cCode ='schema_url', cValue = 'http://www.wwalliance.com/doc/wwa-ei/Booking_Confirmation/1.0.8/Schema/WWA_Booking_Confirmation_version_1.0.8.xsd';
+			
+		</snip>	
+
+ 
